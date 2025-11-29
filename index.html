@@ -1,0 +1,3562 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مافيا الأساطير - لعبة التحدي والذكاء</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0a0e17;
+            --primary: #1a2238;
+            --secondary: #2a3655;
+            --accent: #ff6b6b;
+            --accent-dark: #ff4757;
+            --citizen: #4ecdc4;
+            --mafia: #ff6b6b;
+            --doctor: #1dd1a1;
+            --detective: #54a0ff;
+            --sniper: #ff9f43;
+            --godfather: #a55eea;
+            --online: #9b59b6;
+            --text: #ffffff;
+            --text-secondary: #bdc3c7;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --night: #2c3e50;
+            --day: #3498db;
+            --card-bg: rgba(26, 34, 56, 0.9);
+            --modal-bg: rgba(10, 14, 23, 0.97);
+            --gold: #ffd700;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(78, 205, 196, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(84, 160, 255, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 15px;
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(26, 34, 56, 0.9), rgba(42, 54, 85, 0.9));
+            border-radius: 20px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--citizen), var(--detective), var(--doctor));
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            flex: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.02);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--accent);
+            filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.5));
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .logo-text h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--accent), var(--citizen), var(--detective));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            margin-bottom: 3px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-text p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 12px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            width: 100%;
+            opacity: 0.8;
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-btn:hover {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(255, 107, 107, 0.4);
+        }
+
+        /* الصفحات المنفصلة */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, rgba(26, 34, 56, 0.9), rgba(42, 54, 85, 0.9));
+            border-radius: 20px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--citizen), var(--detective), var(--doctor));
+        }
+
+        .page-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            min-width: 160px;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .nav-btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(255, 107, 107, 0.6);
+        }
+
+        .nav-btn-secondary {
+            background: linear-gradient(135deg, var(--citizen), #2a9d8f);
+            color: white;
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+        }
+
+        .nav-btn-secondary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(78, 205, 196, 0.6);
+        }
+
+        .nav-btn-back {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn-back:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-btn-home {
+            background: linear-gradient(135deg, var(--online), #8e44ad);
+            color: white;
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+
+        .nav-btn-home:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(155, 89, 182, 0.6);
+        }
+
+        /* شاشة البداية */
+        .start-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .start-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--accent), var(--citizen), var(--detective), var(--doctor));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: titleGlow 3s infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 20px rgba(255, 107, 107, 0.5); }
+            100% { text-shadow: 0 0 30px rgba(84, 160, 255, 0.7); }
+        }
+
+        .start-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 50px;
+            max-width: 600px;
+            line-height: 1.8;
+        }
+
+        .start-buttons {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .start-btn {
+            padding: 22px 45px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            min-width: 220px;
+        }
+
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .start-btn:hover::before {
+            left: 100%;
+        }
+
+        .start-btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.5);
+        }
+
+        .start-btn-primary:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 107, 107, 0.7);
+        }
+
+        .start-btn-secondary {
+            background: linear-gradient(135deg, var(--citizen), #2a9d8f);
+            color: white;
+            box-shadow: 0 10px 30px rgba(78, 205, 196, 0.5);
+        }
+
+        .start-btn-secondary:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(78, 205, 196, 0.7);
+        }
+
+        .start-btn-special {
+            background: linear-gradient(135deg, var(--detective), #3d7ea6);
+            color: white;
+            box-shadow: 0 10px 30px rgba(84, 160, 255, 0.5);
+        }
+
+        .start-btn-special:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(84, 160, 255, 0.7);
+        }
+
+        .start-btn-gold {
+            background: linear-gradient(135deg, var(--gold), #ffb347);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .start-btn-gold:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.7);
+        }
+
+        .start-btn-online {
+            background: linear-gradient(135deg, var(--online), #8e44ad);
+            color: white;
+            box-shadow: 0 10px 30px rgba(155, 89, 182, 0.5);
+        }
+
+        .start-btn-online:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(155, 89, 182, 0.7);
+        }
+
+        .start-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 60px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--accent), var(--citizen));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* باقي الأنماط الأساسية */
+        .section {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: 0;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent));
+        }
+
+        .player-input-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .player-input {
+            flex: 1;
+            min-width: 220px;
+            position: relative;
+        }
+
+        .player-input input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            max-width: 100%;
+        }
+
+        .player-input input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .player-input input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(255, 107, 107, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--citizen), #2a9d8f);
+            color: white;
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(78, 205, 196, 0.6);
+        }
+
+        .btn-load {
+            background: linear-gradient(135deg, var(--detective), #3d7ea6);
+            color: white;
+            box-shadow: 0 6px 20px rgba(84, 160, 255, 0.4);
+        }
+
+        .btn-load:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(84, 160, 255, 0.6);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(46, 204, 113, 0.6);
+        }
+
+        .player-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .player-tag {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            padding: 10px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.5s ease;
+            max-width: 200px;
+        }
+
+        .player-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-tag button {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+        }
+
+        .player-tag button:hover {
+            transform: scale(1.1);
+        }
+
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .character-card {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            padding: 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--role-color, var(--accent));
+        }
+
+        .character-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .character-card.mafia { --role-color: var(--mafia); }
+        .character-card.godfather { --role-color: var(--godfather); }
+        .character-card.citizen { --role-color: var(--citizen); }
+        .character-card.doctor { --role-color: var(--doctor); }
+        .character-card.detective { --role-color: var(--detective); }
+        .character-card.sniper { --role-color: var(--sniper); }
+
+        .character-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .character-icon {
+            font-size: 2.5rem;
+            color: var(--role-color, var(--accent));
+            filter: drop-shadow(0 0 8px var(--role-color, var(--accent)));
+        }
+
+        .character-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .character-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .character-details {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 12px;
+            border-right: 3px solid var(--role-color, var(--accent));
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .character-details.active {
+            max-height: 400px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-icon {
+            color: var(--role-color, var(--accent));
+            font-size: 0.8rem;
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .role-section {
+            text-align: center;
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        .role-icon-large {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--accent), var(--citizen), var(--detective));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .role-title {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--text), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .role-description {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .player-name {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: var(--accent);
+            padding: 15px 25px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 16px;
+            border: 2px solid rgba(255, 107, 107, 0.3);
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--citizen), var(--detective), var(--doctor));
+        }
+
+        .phase-indicator {
+            font-size: 3rem;
+            font-weight: bold;
+            padding: 15px 30px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            display: inline-block;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phase-indicator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+        }
+
+        .phase-indicator:hover::before {
+            animation: shine 1.5s;
+        }
+
+        @keyframes shine {
+            100% { transform: translateX(100%); }
+        }
+
+        .phase-night {
+            background: linear-gradient(135deg, var(--night), #1a2530);
+            color: white;
+            border: 2px solid rgba(44, 62, 80, 0.5);
+        }
+
+        .phase-day {
+            background: linear-gradient(135deg, var(--day), #2980b9);
+            color: white;
+            border: 2px solid rgba(52, 152, 219, 0.5);
+        }
+
+        .timer {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: var(--accent);
+            text-shadow: 0 2px 8px rgba(255, 107, 107, 0.5);
+            font-family: 'Courier New', monospace;
+            animation: pulse 1s infinite;
+        }
+
+        .phase-description {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 14px 24px;
+            border-radius: 12px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .player-card {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+        }
+
+        .player-card:hover::before {
+            animation: shine 1.5s;
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .player-card.selected {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .player-card.dead {
+            opacity: 0.5;
+            background: linear-gradient(135deg, #475569, #374151);
+            transform: scale(0.9);
+            cursor: not-allowed;
+        }
+
+        .player-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border: 2px dashed var(--danger);
+        }
+
+        .player-role {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        .vote-count {
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            margin: 6px auto 0;
+            box-shadow: 0 2px 6px rgba(255, 107, 107, 0.5);
+        }
+
+        .results-container {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 18px;
+            margin: 20px 0;
+            border-right: 4px solid var(--accent);
+            box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .day-title {
+            text-align: center;
+            font-size: 1.7rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0 16px;
+        }
+
+        .day-title::before, .day-title::after {
+            content: '✦';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .day-title::before {
+            right: -8px;
+        }
+
+        .day-title::after {
+            left: -8px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            border-right: 3px solid var(--accent);
+            transition: transform 0.3s ease;
+        }
+
+        .result-item:hover {
+            transform: translateX(-8px);
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-back {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-back:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-skip {
+            background: linear-gradient(135deg, var(--warning), #e67e22);
+            color: white;
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+
+        .btn-skip:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(243, 156, 18, 0.6);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            padding: 30px;
+            border-radius: 24px;
+            max-width: 480px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            animation: modalAppear 0.5s ease;
+        }
+
+        @keyframes modalAppear {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--citizen), var(--detective));
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--text);
+            background: linear-gradient(135deg, var(--accent), var(--citizen));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-message {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        /* تحديث نمط الرسالة لزيادة حجمها وإطالة وقت العرض */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 18px 28px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            z-index: 1001;
+            animation: slideIn 0.4s ease, slideOut 0.4s ease 4.6s forwards;
+            border-left: 4px solid rgba(255, 255, 255, 0.5);
+            font-size: 1.2rem;
+        }
+
+        .message.warning {
+            background: var(--warning);
+        }
+
+        .message.error {
+            background: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* تأثيرات النجوم */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* تأثيرات خاصة للفوز */
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            opacity: 0;
+            z-index: 1002;
+        }
+
+        @keyframes confettiFall {
+            0% { 
+                transform: translateY(-80px) rotate(0deg); 
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(800px) rotate(720deg); 
+                opacity: 0;
+            }
+        }
+
+        /* خط تقدم المراحل */
+        .phase-progress {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .phase-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .phase-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            border: 2px solid var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .phase-circle.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .phase-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .phase-connector {
+            position: absolute;
+            top: 20px;
+            height: 2px;
+            background: var(--text-secondary);
+            z-index: 1;
+        }
+
+        .phase-connector.active {
+            background: var(--accent);
+        }
+
+        /* أنماط جديدة لنتائج التصويت */
+        .voting-results {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 16px;
+            margin: 20px 0;
+            border-right: 4px solid var(--accent);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .vote-result-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            border-right: 3px solid var(--accent);
+            transition: transform 0.3s ease;
+        }
+        
+        .vote-result-item:hover {
+            transform: translateX(-8px);
+        }
+        
+        .vote-result-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .vote-result-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .vote-result-details {
+            flex: 1;
+        }
+        
+        .vote-result-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .vote-result-count {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .vote-result-executed {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: inline-block;
+        }
+        
+        .vote-result-saved {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        /* أنماط جديدة لشاشة الفوز */
+        .victory-screen {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(26, 34, 56, 0.95), rgba(42, 54, 85, 0.95));
+            border-radius: 24px;
+            margin: 20px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .victory-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--accent), var(--citizen), var(--detective), var(--doctor));
+        }
+        
+        .victory-icon {
+            font-size: 6rem;
+            margin-bottom: 25px;
+            animation: bounce 2s infinite;
+        }
+        
+        .victory-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .victory-mafia {
+            background: linear-gradient(135deg, var(--mafia), var(--godfather));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .victory-citizen {
+            background: linear-gradient(135deg, var(--citizen), var(--doctor));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .victory-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .victory-players {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 25px;
+            border-radius: 16px;
+            margin: 25px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: right;
+        }
+        
+        .victory-players-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .victory-player {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .victory-player:last-child {
+            border-bottom: none;
+        }
+        
+        .victory-player-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .victory-player-role {
+            color: var(--text-secondary);
+        }
+        
+        .victory-player-alive {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .victory-player-dead {
+            color: var(--danger);
+            text-decoration: line-through;
+        }
+        
+        .victory-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .victory-stat {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .victory-stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .victory-stat-mafia {
+            color: var(--mafia);
+        }
+        
+        .victory-stat-citizen {
+            color: var(--citizen);
+        }
+        
+        .victory-stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .page {
+                padding: 10px;
+            }
+            
+            .start-title {
+                font-size: 2.5rem;
+            }
+            
+            .start-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .start-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .start-btn {
+                width: 100%;
+                max-width: 300px;
+                padding: 18px 30px;
+                font-size: 1.2rem;
+            }
+            
+            .start-features {
+                grid-template-columns: 1fr;
+            }
+            
+            .player-input-container {
+                flex-direction: column;
+            }
+            
+            .player-input {
+                min-width: 100%;
+            }
+            
+            .characters-grid, .players-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .role-icon-large {
+                font-size: 4rem;
+            }
+            
+            .role-title {
+                font-size: 1.7rem;
+            }
+            
+            .phase-indicator {
+                font-size: 1.6rem;
+                padding: 12px 24px;
+            }
+            
+            .timer {
+                font-size: 2.8rem;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .player-card {
+                padding: 14px;
+            }
+            
+            .player-name {
+                font-size: 1.8rem;
+            }
+            
+            .phase-description {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* أنماط جديدة لعرض اسم اللاعب حامل الدور */
+        .current-role-player {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 15px 0;
+            color: var(--accent);
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: inline-block;
+        }
+
+        /* تحسينات لواجهة صفحة الدور */
+        .role-display-container {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(26, 34, 56, 0.95), rgba(42, 54, 85, 0.95));
+            border-radius: 24px;
+            margin: 20px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .role-display-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--accent), var(--citizen), var(--detective), var(--doctor));
+        }
+        
+        .role-display-icon {
+            font-size: 8rem;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+            animation: bounce 2s infinite;
+        }
+        
+        .role-display-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .role-display-player {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 25px 0;
+            color: var(--accent);
+            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .role-display-description {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            line-height: 1.7;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- تأثيرات النجوم -->
+    <div class="stars" id="starsContainer"></div>
+    
+    <!-- صفحة البداية -->
+    <div class="page active" id="startPage">
+        <div class="page-content">
+            <div class="start-screen">
+                <h1 class="start-title">مافيا الأساطير</h1>
+                <p class="start-subtitle">
+                    انضم إلى المعركة الملحمية بين المافيا والمواطنين. استخدم ذكاءك ومهاراتك لاكتشاف الخونة وإنقاذ المدينة من براثن المافيا!
+                </p>
+                
+                <div class="start-buttons">
+                    <button class="start-btn start-btn-primary" id="quickStartBtn">
+                        <i class="fas fa-bolt"></i>
+                        بدء سريع
+                    </button>
+                    <button class="start-btn start-btn-gold" id="customGameBtn">
+                        <i class="fas fa-cogs"></i>
+                        لعبة مخصصة
+                    </button>
+                    <button class="start-btn start-btn-secondary" id="newGameBtn">
+                        <i class="fas fa-plus-circle"></i>
+                        لعبة جديدة
+                    </button>
+                    <button class="start-btn start-btn-online" id="onlineGameBtn">
+                        <i class="fas fa-globe"></i>
+                        لعب أونلاين (قريباً)
+                    </button>
+                    <button class="start-btn start-btn-special" id="tutorialBtn">
+                        <i class="fas fa-graduation-cap"></i>
+                        تعلم اللعب
+                    </button>
+                </div>
+                
+                <div class="start-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="feature-title">لعب جماعي</h3>
+                        <p class="feature-desc">ادع أصدقاءك للانضمام إلى اللعبة مع دعم حتى 15 لاعباً</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chess"></i>
+                        </div>
+                        <h3 class="feature-title">إستراتيجية عميقة</h3>
+                        <p class="feature-desc">خطط واستخدم مهارات الشخصيات الفريدة للفوز بذكاء</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h3 class="feature-title">تحديات ممتعة</h3>
+                        <p class="feature-desc">استمتع بتجربة لعب ديناميكية مع تحديات مختلفة كل مرة</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="page-footer">
+                تم التطوير بواسطة: زياد العوني ✦
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة إعداد اللعبة -->
+    <div class="page" id="setupPage">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>مافيا الأساطير</h1>
+                        <p>لعبة التحدي والذكاء الاستثنائية</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">إعداد اللعبة</h2>
+                <div class="player-input-container">
+                    <div class="player-input">
+                        <input type="text" id="playerName" placeholder="أدخل اسم اللاعب (12 حرف كحد أقصى)" maxlength="12">
+                    </div>
+                    <button class="btn btn-primary" id="addPlayer">
+                        <i class="fas fa-plus"></i> إضافة لاعب
+                    </button>
+                </div>
+                <div class="player-list" id="playerList"></div>
+                <div class="game-controls">
+                    <button class="btn btn-primary" id="startGame">
+                        <i class="fas fa-play"></i> بدء اللعبة
+                    </button>
+                    <button class="btn btn-load" id="loadGame">
+                        <i class="fas fa-folder-open"></i> تحميل اللعبة
+                    </button>
+                    <button class="btn btn-save" id="saveGame">
+                        <i class="fas fa-save"></i> حفظ اللعبة
+                    </button>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-btn nav-btn-home" id="backToStartFromSetup">
+                    <i class="fas fa-home"></i> العودة للرئيسية
+                </button>
+            </div>
+            
+            <div class="page-footer">
+                تم التطوير بواسطة: زياد العوني ✦
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة التعليمات -->
+    <div class="page" id="tutorialPage">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>مافيا الأساطير</h1>
+                        <p>لعبة التحدي والذكاء الاستثنائية</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">كيفية اللعب والفوز</h2>
+                <div class="characters-grid" id="tutorialCharactersGrid"></div>
+                
+                <div class="section" style="margin-top: 30px;">
+                    <h3 class="section-title">قواعد اللعبة</h3>
+                    <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px;">
+                        <h4 style="color: var(--accent); margin-bottom: 15px;">🎯 كيفية الفوز:</h4>
+                        <ul style="list-style-type: none; padding-right: 20px;">
+                            <li style="margin-bottom: 10px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-check" style="color: var(--success); margin-left: 10px; margin-top: 5px;"></i>
+                                <span>فريق <strong style="color: var(--citizen);">المواطنين</strong> يفوز عندما يتم إعدام جميع أعضاء المافيا</span>
+                            </li>
+                            <li style="margin-bottom: 10px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-check" style="color: var(--success); margin-left: 10px; margin-top: 5px;"></i>
+                                <span>فريق <strong style="color: var(--mafia);">المافيا</strong> يفوز عندما يصبح عددهم مساوياً أو أكثر من المواطنين</span>
+                            </li>
+                        </ul>
+                        
+                        <h4 style="color: var(--accent); margin: 20px 0 15px;">📋 توزيع الأدوار:</h4>
+                        <ul style="list-style-type: none; padding-right: 20px;">
+                            <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-user-secret" style="color: var(--mafia); margin-left: 10px; margin-top: 3px;"></i>
+                                <span><strong>زعيم المافيا:</strong> 1 فقط - يظهر كمواطن عند التحقيق</span>
+                            </li>
+                            <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-user-secret" style="color: var(--mafia); margin-left: 10px; margin-top: 3px;"></i>
+                                <span><strong>عضو المافيا:</strong> 1 لكل 3 لاعبين - يقتلون ليلاً</span>
+                            </li>
+                            <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-heartbeat" style="color: var(--doctor); margin-left: 10px; margin-top: 3px;"></i>
+                                <span><strong>الطبيب:</strong> 1 فقط - ينقذ لاعباً واحداً كل ليلة</span>
+                            </li>
+                            <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-search" style="color: var(--detective); margin-left: 10px; margin-top: 3px;"></i>
+                                <span><strong>المحقق:</strong> 1 فقط - يتحقق من هوية لاعب كل ليلة</span>
+                            </li>
+                            <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-crosshairs" style="color: var(--sniper); margin-left: 10px; margin-top: 3px;"></i>
+                                <span><strong>القناص:</strong> 1 فقط - يملك رصاصة واحدة لقتل مشتبه به</span>
+                            </li>
+                            <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-user" style="color: var(--citizen); margin-left: 10px; margin-top: 3px;"></i>
+                                <span><strong>المواطنون:</strong> الباقي - لا يملكون قدرات خاصة</span>
+                            </li>
+                        </ul>
+                        
+                        <h4 style="color: var(--accent); margin: 20px 0 15px;">🔒 قيود القدرات:</h4>
+                        <ul style="list-style-type: none; padding-right: 20px;">
+                            <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-ban" style="color: var(--danger); margin-left: 10px; margin-top: 3px;"></i>
+                                <span>لا يمكن للمافيا قتل بعضهم البعض</span>
+                            </li>
+                            <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-user-md" style="color: var(--doctor); margin-left: 10px; margin-top: 3px;"></i>
+                                <span>الطبيب فقط يمكنه استخدام قدرته على نفسه</span>
+                            </li>
+                            <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-ban" style="color: var(--danger); margin-left: 10px; margin-top: 3px;"></i>
+                                <span>باقي الشخصيات لا يمكنهم استخدام قدراتهم على أنفسهم</span>
+                            </li>
+                            <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-skull" style="color: var(--danger); margin-left: 10px; margin-top: 3px;"></i>
+                                <span>لا يمكن للاعبين الموتى استخدام قدراتهم</span>
+                            </li>
+                            <li style="margin-bottom: 8px; display: flex; align-items: flex-start;">
+                                <i class="fas fa-crosshairs" style="color: var(--sniper); margin-left: 10px; margin-top: 3px;"></i>
+                                <span>القناص لا يمكنه القنص إلا إذا كان موجوداً (حي)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-btn nav-btn-home" id="backToStartFromTutorial">
+                    <i class="fas fa-home"></i> العودة للرئيسية
+                </button>
+            </div>
+            
+            <div class="page-footer">
+                تم التطوير بواسطة: زياد العوني ✦
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة تسليم الجهاز -->
+    <div class="page" id="handoverPage">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>مافيا الأساطير</h1>
+                        <p>لعبة التحدي والذكاء الاستثنائية</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="role-section">
+                    <div class="role-icon-large">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h2 class="role-title">سلم الجهاز للاعب</h2>
+                    <div class="player-name" id="handoverPlayer"></div>
+                    <button class="btn btn-primary" id="confirmHandover">
+                        <i class="fas fa-check"></i> تأكيد الاستلام
+                    </button>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-btn nav-btn-home" id="backToStartFromHandover">
+                    <i class="fas fa-home"></i> العودة للرئيسية
+                </button>
+            </div>
+            
+            <div class="page-footer">
+                تم التطوير بواسطة: زياد العوني ✦
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة عرض الدور -->
+    <div class="page" id="rolePage">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>مافيا الأساطير</h1>
+                        <p>لعبة التحدي والذكاء الاستثنائية</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="role-display-container">
+                <div class="role-display-icon" id="roleDisplayIcon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 class="role-display-title" id="roleDisplayTitle">دورك في اللعبة</h2>
+                <div class="role-display-player" id="roleDisplayPlayer">اسم اللاعب</div>
+                <p class="role-display-description" id="roleDisplayDescription">
+                    وصف الدور سوف يظهر هنا مع تفاصيل المهمة والمسؤوليات
+                </p>
+                <button class="btn btn-primary" id="nextPlayerRole">
+                    <i class="fas fa-arrow-left"></i> اللاعب التالي
+                </button>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-btn nav-btn-home" id="backToStartFromRole">
+                    <i class="fas fa-home"></i> العودة للرئيسية
+                </button>
+            </div>
+            
+            <div class="page-footer">
+                تم التطوير بواسطة: زياد العوني ✦
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة تسليم الحكم -->
+    <div class="page" id="judgeHandoverPage">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>مافيا الأساطير</h1>
+                        <p>لعبة التحدي والذكاء الاستثنائية</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="role-section">
+                    <div class="role-icon-large">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h2 class="role-title">سلم الجهاز للحكم</h2>
+                    <p class="role-description">سيقوم الحكم بإدارة مرحلة الليل وتوجيه اللاعبين لأدوارهم</p>
+                    <button class="btn btn-primary" id="confirmJudgeHandover">
+                        <i class="fas fa-check"></i> تأكيد الاستلام
+                    </button>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-btn nav-btn-home" id="backToStartFromJudgeHandover">
+                    <i class="fas fa-home"></i> العودة للرئيسية
+                </button>
+            </div>
+            
+            <div class="page-footer">
+                تم التطوير بواسطة: زياد العوني ✦
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة الليل -->
+    <div class="page" id="nightPage">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>مافيا الأساطير</h1>
+                        <p>لعبة التحدي والذكاء الاستثنائية</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="game-header">
+                    <div class="phase-indicator phase-night" id="phaseIndicator">الليل</div>
+                    <div class="timer" id="gameTimer">40</div>
+                    <h3 class="phase-description" id="phaseDescription">دور المافيا: اختيار هدف للقتل</h3>
+                    
+                    <!-- عرض اسم اللاعب حامل الدور الحالي -->
+                    <div class="current-role-player" id="currentRolePlayer"></div>
+                    
+                    <div class="phase-progress" id="phaseProgress">
+                        <div class="phase-step">
+                            <div class="phase-circle active">1</div>
+                            <div class="phase-label">المافيا</div>
+                        </div>
+                        <div class="phase-step">
+                            <div class="phase-circle">2</div>
+                            <div class="phase-label">المحقق</div>
+                        </div>
+                        <div class="phase-step">
+                            <div class="phase-circle">3</div>
+                            <div class="phase-label">الطبيب</div>
+                        </div>
+                        <div class="phase-step">
+                            <div class="phase-circle">4</div>
+                            <div class="phase-label">القناص</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="players-grid" id="nightPlayersGrid"></div>
+                <div class="game-controls">
+                    <button class="btn btn-primary" id="submitNightAction">
+                        <i class="fas fa-check"></i> تأكيد الاختيار
+                    </button>
+                    <button class="btn btn-skip" id="skipNightAction">
+                        <i class="fas fa-forward"></i> تخطي
+                    </button>
+                    <button class="btn btn-back" id="endGameFromNight">
+                        <i class="fas fa-stop"></i> إنهاء اللعبة
+                    </button>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-btn nav-btn-home" id="backToStartFromNight">
+                    <i class="fas fa-home"></i> العودة للرئيسية
+                </button>
+            </div>
+            
+            <div class="page-footer">
+                تم التطوير بواسطة: زياد العوني ✦
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة النتائج -->
+    <div class="page" id="resultsPage">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>مافيا الأساطير</h1>
+                        <p>لعبة التحدي والذكاء الاستثنائية</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">نتائج الليلة الماضية</h2>
+                <div class="results-container" id="resultsContainer">
+                    <div class="day-title" id="dayTitle">نتائج اليوم 1</div>
+                </div>
+                <div class="game-controls">
+                    <button class="btn btn-primary" id="continueToDiscussion">
+                        <i class="fas fa-comments"></i> بدء المناقشة
+                    </button>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-btn nav-btn-home" id="backToStartFromResults">
+                    <i class="fas fa-home"></i> العودة للرئيسية
+                </button>
+            </div>
+            
+            <div class="page-footer">
+                تم التطوير بواسطة: زياد العوني ✦
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة النهار -->
+    <div class="page" id="dayPage">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>مافيا الأساطير</h1>
+                        <p>لعبة التحدي والذكاء الاستثنائية</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="game-header">
+                    <div class="phase-indicator phase-day" id="dayPhaseIndicator">النهار</div>
+                    <div class="timer" id="dayTimer">150</div>
+                    <h3 class="phase-description" id="dayPhaseDescription">مرحلة النهار: مناقشة واختيار لاعب للإعدام</h3>
+                </div>
+                
+                <div class="players-grid" id="dayPlayersGrid"></div>
+                <div class="game-controls">
+                    <button class="btn btn-primary" id="submitDayAction">
+                        <i class="fas fa-check"></i> تأكيد الاختيار
+                    </button>
+                    <button class="btn btn-skip" id="skipDayAction">
+                        <i class="fas fa-forward"></i> تخطي
+                    </button>
+                    <button class="btn btn-back" id="endGameFromDay">
+                        <i class="fas fa-stop"></i> إنهاء اللعبة
+                    </button>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-btn nav-btn-home" id="backToStartFromDay">
+                    <i class="fas fa-home"></i> العودة للرئيسية
+                </button>
+            </div>
+            
+            <div class="page-footer">
+                تم التطوير بواسطة: زياد العوني ✦
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة نتائج التصويت -->
+    <div class="page" id="votingResultsPage">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>مافيا الأساطير</h1>
+                        <p>لعبة التحدي والذكاء الاستثنائية</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">نتائج التصويت</h2>
+                
+                <div class="voting-results" id="votingResults">
+                    <!-- سيتم تعبئتها ديناميكياً -->
+                </div>
+                
+                <div class="game-controls">
+                    <button class="btn btn-primary" id="continueAfterVoting">
+                        <i class="fas fa-arrow-left"></i> الاستمرار في اللعبة
+                    </button>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-btn nav-btn-home" id="backToStartFromVotingResults">
+                    <i class="fas fa-home"></i> العودة للرئيسية
+                </button>
+            </div>
+            
+            <div class="page-footer">
+                تم التطوير بواسطة: زياد العوني ✦
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة الفوز -->
+    <div class="page" id="victoryPage">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>مافيا الأساطير</h1>
+                        <p>لعبة التحدي والذكاء الاستثنائية</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="victory-screen" id="victoryScreen">
+                <!-- محتوى الفوز سيتم تعبئته ديناميكياً -->
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-btn nav-btn-primary" id="newGameAfterVictory">
+                    <i class="fas fa-plus-circle"></i> لعبة جديدة
+                </button>
+                <button class="nav-btn nav-btn-home" id="backToStartFromVictory">
+                    <i class="fas fa-home"></i> العودة للرئيسية
+                </button>
+            </div>
+            
+            <div class="page-footer">
+                تم التطوير بواسطة: زياد العوني ✦
+            </div>
+        </div>
+    </div>
+
+    <!-- النوافذ المنبثقة -->
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <div class="modal-title">لعبة المافيا</div>
+            <div class="modal-message">
+                <strong>مافيا الأساطير - لعبة الذكاء والتحدي</strong><br><br>
+                لعبة إستراتيجية اجتماعية تقوم على التفكير والتحليل.<br>
+                فريق المافيا يحاول التخلص من المواطنين،<br>
+                وفريق المواطنين يحاول اكتشاف المافيا.
+            </div>
+            <button class="btn btn-primary" id="closeInfo">إغلاق</button>
+        </div>
+    </div>
+
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-title">تأكيد العودة</div>
+            <div class="modal-message">
+                <i class="fas fa-exclamation-triangle" style="color: var(--warning); font-size: 2.5rem; margin-bottom: 15px;"></i>
+                <p>هل أنت متأكد أنك تريد العودة إلى الشاشة الرئيسية؟</p>
+                <p style="color: var(--accent); margin-top: 12px;">⚠️ سيتم فقدان تقدم اللعبة الحالية</p>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center; margin-top: 20px;">
+                <button class="btn btn-primary" id="confirmHome">
+                    <i class="fas fa-check"></i> نعم، العودة
+                </button>
+                <button class="btn btn-back" id="cancelHome">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات الشخصيات
+        const characters = [
+            {
+                id: 'godfather',
+                name: '💎 زعيم المافيا',
+                icon: 'fa-crown',
+                color: 'godfather',
+                description: 'القائد الأقوى للمافيا، يظهر كمواطن عند التحقيق ويقود فريقه نحو النصر.',
+                details: ['يظهر كمواطن عند التحقيق من قبل المحقق', 'يقود عملية القتل الليلي مع فريق المافيا', 'الأكثر خطورة في اللعبة', 'يعمل مع أعضاء المافيا الآخرين']
+            },
+            {
+                id: 'doctor',
+                name: '👨‍⚕️ الطبيب',
+                icon: 'fa-heartbeat',
+                color: 'doctor',
+                description: 'طبيب البلدة الماهر، يمكنه إنقاذ لاعب واحد كل ليلة من قتل المافيا.',
+                details: ['ينقذ لاعباً واحداً كل ليلة من القتل', 'يمكنه إنقاذ نفسه', 'يحاول حماية الأدوار المهمة', 'مهم لحماية المواطنين']
+            },
+            {
+                id: 'mafia',
+                name: '🔫 عضو المافيا',
+                icon: 'fa-user-secret',
+                color: 'mafia',
+                description: 'عضو في منظمة المافيا السرية، يعمل مع زملائه للتخلص من المواطنين ليلاً.',
+                details: ['يقتل لاعباً واحداً كل ليلة', 'يتعاون مع أعضاء المافيا الآخرين', 'يحاول إخفاء هويته عن المواطنين', 'يعمل تحت قيادة زعيم المافيا']
+            },
+            {
+                id: 'detective',
+                name: '🕵️ المحقق',
+                icon: 'fa-search',
+                color: 'detective',
+                description: 'محقق الشرطة السري، يمكنه التحقق من هوية لاعب واحد كل ليلة لاكتشاف المافيا.',
+                details: ['يتحقق من هوية لاعب واحد كل ليلة', 'يظهر له إذا كان اللاعب من المافيا أم لا', 'زعيم المافيا يظهر كمواطن عند التحقيق', 'يساعد المواطنين في اكتشاف المافيا']
+            },
+            {
+                id: 'sniper',
+                name: '🎯 القناص',
+                icon: 'fa-crosshairs',
+                color: 'sniper',
+                description: 'قناص محترف يملك رصاصة واحدة فقط، يمكنه استخدامها خلال الليل لقتل مشتبه به.',
+                details: ['يملك رصاصة واحدة فقط في اللعبة', 'يستخدمها خلال مرحلة الليل', 'إذا لم يقتل المافيا يموت في الليل', 'يمكنه قتل لاعب يشتبه أنه من المافيا']
+            },
+            {
+                id: 'citizen',
+                name: '👤 المواطن',
+                icon: 'fa-user',
+                color: 'citizen',
+                description: 'مواطن عادي لا يملك قدرات خاصة، يعتمد على الذكاء والملاحظة لاكتشاف المافيا.',
+                details: ['لا يملك قدرات خاصة', 'يعتمد على التحليل والمناقشة', 'يصوت لاكتشاف وإعدام المافيا', 'يحاول البقاء على قيد الحياة']
+            }
+        ];
+
+        // حالة اللعبة الكاملة
+        let gameState = {
+            players: [],
+            currentPage: 'start',
+            rolesAssigned: false,
+            currentPlayerIndex: 0,
+            gamePhase: 'night',
+            currentRoleAction: 'mafia',
+            timer: 40,
+            timerInterval: null,
+            selectedPlayer: null,
+            votes: {},
+            killedTonight: null,
+            savedTonight: null,
+            investigatedTonight: null,
+            sniperTarget: null,
+            sniperBullet: true,
+            dayResults: [],
+            votedPlayers: new Set(),
+            totalVotes: 0,
+            dayNumber: 1,
+            currentActionPlayer: null,
+            votingPhase: false,
+            playerVotes: {},
+            voteHistory: [],
+            currentPlayerRole: null,
+            votingResults: [],
+            executedPlayer: null,
+            sniperUsedBullet: false,
+            gameWinner: null,
+            skipVotes: 0
+        };
+
+        // عناصر DOM الكاملة
+        const elements = {
+            // الصفحات
+            startPage: document.getElementById('startPage'),
+            setupPage: document.getElementById('setupPage'),
+            tutorialPage: document.getElementById('tutorialPage'),
+            handoverPage: document.getElementById('handoverPage'),
+            rolePage: document.getElementById('rolePage'),
+            judgeHandoverPage: document.getElementById('judgeHandoverPage'),
+            nightPage: document.getElementById('nightPage'),
+            resultsPage: document.getElementById('resultsPage'),
+            dayPage: document.getElementById('dayPage'),
+            votingResultsPage: document.getElementById('votingResultsPage'),
+            victoryPage: document.getElementById('victoryPage'),
+            
+            // أزرار التنقل
+            backToStartFromSetup: document.getElementById('backToStartFromSetup'),
+            backToStartFromTutorial: document.getElementById('backToStartFromTutorial'),
+            backToStartFromHandover: document.getElementById('backToStartFromHandover'),
+            backToStartFromRole: document.getElementById('backToStartFromRole'),
+            backToStartFromJudgeHandover: document.getElementById('backToStartFromJudgeHandover'),
+            backToStartFromNight: document.getElementById('backToStartFromNight'),
+            backToStartFromResults: document.getElementById('backToStartFromResults'),
+            backToStartFromDay: document.getElementById('backToStartFromDay'),
+            backToStartFromVotingResults: document.getElementById('backToStartFromVotingResults'),
+            backToStartFromVictory: document.getElementById('backToStartFromVictory'),
+            
+            // أزرار جديدة
+            newGameAfterVictory: document.getElementById('newGameAfterVictory'),
+            onlineGameBtn: document.getElementById('onlineGameBtn'),
+            
+            // باقي العناصر
+            playerNameInput: document.getElementById('playerName'),
+            addPlayerBtn: document.getElementById('addPlayer'),
+            playerList: document.getElementById('playerList'),
+            startGameBtn: document.getElementById('startGame'),
+            tutorialCharactersGrid: document.getElementById('tutorialCharactersGrid'),
+            loadGameBtn: document.getElementById('loadGame'),
+            saveGameBtn: document.getElementById('saveGame'),
+            confirmHandoverBtn: document.getElementById('confirmHandover'),
+            confirmJudgeHandoverBtn: document.getElementById('confirmJudgeHandover'),
+            nextPlayerRoleBtn: document.getElementById('nextPlayerRole'),
+            submitNightAction: document.getElementById('submitNightAction'),
+            skipNightAction: document.getElementById('skipNightAction'),
+            endGameFromNight: document.getElementById('endGameFromNight'),
+            submitDayAction: document.getElementById('submitDayAction'),
+            skipDayAction: document.getElementById('skipDayAction'),
+            endGameFromDay: document.getElementById('endGameFromDay'),
+            continueToDiscussion: document.getElementById('continueToDiscussion'),
+            continueAfterVoting: document.getElementById('continueAfterVoting'),
+            phaseIndicator: document.getElementById('phaseIndicator'),
+            gameTimer: document.getElementById('gameTimer'),
+            phaseDescription: document.getElementById('phaseDescription'),
+            dayPhaseIndicator: document.getElementById('dayPhaseIndicator'),
+            dayTimer: document.getElementById('dayTimer'),
+            dayPhaseDescription: document.getElementById('dayPhaseDescription'),
+            nightPlayersGrid: document.getElementById('nightPlayersGrid'),
+            dayPlayersGrid: document.getElementById('dayPlayersGrid'),
+            roleDisplayIcon: document.getElementById('roleDisplayIcon'),
+            roleDisplayTitle: document.getElementById('roleDisplayTitle'),
+            roleDisplayPlayer: document.getElementById('roleDisplayPlayer'),
+            roleDisplayDescription: document.getElementById('roleDisplayDescription'),
+            handoverPlayer: document.getElementById('handoverPlayer'),
+            resultsContainer: document.getElementById('resultsContainer'),
+            votingResults: document.getElementById('votingResults'),
+            dayTitle: document.getElementById('dayTitle'),
+            quickStartBtn: document.getElementById('quickStartBtn'),
+            customGameBtn: document.getElementById('customGameBtn'),
+            newGameBtn: document.getElementById('newGameBtn'),
+            tutorialBtn: document.getElementById('tutorialBtn'),
+            confirmModal: document.getElementById('confirmModal'),
+            confirmHome: document.getElementById('confirmHome'),
+            cancelHome: document.getElementById('cancelHome'),
+            closeInfo: document.getElementById('closeInfo'),
+            phaseProgress: document.getElementById('phaseProgress'),
+            victoryScreen: document.getElementById('victoryScreen'),
+            currentRolePlayer: document.getElementById('currentRolePlayer')
+        };
+
+        // تهيئة اللعبة
+        function initGame() {
+            createStars();
+            setupEventListeners();
+            displayTutorialCharacters();
+        }
+
+        // إعداد مستمعي الأحداث
+        function setupEventListeners() {
+            // أزرار الصفحة الرئيسية
+            elements.quickStartBtn.addEventListener('click', quickStart);
+            elements.customGameBtn.addEventListener('click', showSetupPage);
+            elements.newGameBtn.addEventListener('click', showSetupPage);
+            elements.tutorialBtn.addEventListener('click', showTutorialPage);
+            elements.onlineGameBtn.addEventListener('click', () => {
+                showMessage('ميزة اللعب أونلاين قريباً!', 'warning');
+            });
+            
+            // أزرار التنقل
+            elements.backToStartFromSetup.addEventListener('click', showStartPage);
+            elements.backToStartFromTutorial.addEventListener('click', showStartPage);
+            elements.backToStartFromHandover.addEventListener('click', showStartPage);
+            elements.backToStartFromRole.addEventListener('click', showStartPage);
+            elements.backToStartFromJudgeHandover.addEventListener('click', showStartPage);
+            elements.backToStartFromNight.addEventListener('click', showStartPage);
+            elements.backToStartFromResults.addEventListener('click', showStartPage);
+            elements.backToStartFromDay.addEventListener('click', showStartPage);
+            elements.backToStartFromVotingResults.addEventListener('click', showStartPage);
+            elements.backToStartFromVictory.addEventListener('click', showStartPage);
+            
+            // أزرار الإعداد
+            elements.addPlayerBtn.addEventListener('click', addPlayer);
+            elements.playerNameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addPlayer();
+            });
+            elements.startGameBtn.addEventListener('click', startGame);
+            elements.loadGameBtn.addEventListener('click', loadGame);
+            elements.saveGameBtn.addEventListener('click', saveGame);
+            
+            // أزرار تسليم الأدوار
+            elements.confirmHandoverBtn.addEventListener('click', showPlayerRole);
+            elements.nextPlayerRoleBtn.addEventListener('click', showNextPlayerRole);
+            elements.confirmJudgeHandoverBtn.addEventListener('click', startNightPhase);
+            
+            // أزرار مرحلة الليل
+            elements.submitNightAction.addEventListener('click', submitNightAction);
+            elements.skipNightAction.addEventListener('click', skipNightAction);
+            elements.endGameFromNight.addEventListener('click', endGame);
+            
+            // أزرار مرحلة النهار
+            elements.submitDayAction.addEventListener('click', submitDayAction);
+            elements.skipDayAction.addEventListener('click', skipDayAction);
+            elements.endGameFromDay.addEventListener('click', endGame);
+            
+            // أزرار الاستمرار
+            elements.continueToDiscussion.addEventListener('click', continueToDiscussion);
+            elements.continueAfterVoting.addEventListener('click', continueAfterVoting);
+            
+            // أزرار الفوز
+            elements.newGameAfterVictory.addEventListener('click', startNewGameAfterVictory);
+            
+            // النوافذ المنبثقة
+            elements.closeInfo.addEventListener('click', () => {
+                document.getElementById('infoModal').style.display = 'none';
+            });
+            elements.confirmHome.addEventListener('click', showStartPage);
+            elements.cancelHome.addEventListener('click', () => {
+                document.getElementById('confirmModal').style.display = 'none';
+            });
+        }
+
+        // دوال عرض الصفحات
+        function showPage(pageId) {
+            hideAllPages();
+            document.getElementById(pageId + 'Page').classList.add('active');
+            gameState.currentPage = pageId;
+            
+            // تحديث واجهة المستخدم بناءً على الصفحة
+            if (pageId === 'setup') {
+                updatePlayerList();
+            } else if (pageId === 'night') {
+                updateNightPhase();
+            } else if (pageId === 'day') {
+                updateDayPhase();
+            } else if (pageId === 'results') {
+                updateResultsPage();
+            } else if (pageId === 'votingResults') {
+                updateVotingResults();
+            }
+        }
+
+        function showStartPage() {
+            showPage('start');
+        }
+
+        function showSetupPage() {
+            showPage('setup');
+        }
+
+        function showTutorialPage() {
+            showPage('tutorial');
+        }
+
+        function showHandoverPage() {
+            showPage('handover');
+            if (gameState.currentPlayerIndex < gameState.players.length) {
+                elements.handoverPlayer.textContent = gameState.players[gameState.currentPlayerIndex].name;
+            }
+        }
+
+        function showRolePage() {
+            showPage('role');
+        }
+
+        function showJudgeHandoverPage() {
+            showPage('judgeHandover');
+        }
+
+        function showNightPage() {
+            showPage('night');
+        }
+
+        function showResultsPage() {
+            showPage('results');
+        }
+
+        function showDayPage() {
+            showPage('day');
+        }
+
+        function showVotingResultsPage() {
+            showPage('votingResults');
+        }
+
+        function showVictoryPage() {
+            showPage('victory');
+        }
+
+        function hideAllPages() {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+        }
+
+        // دالة البدء السريع
+        function quickStart() {
+            const defaultNames = ['أحمد', 'محمد', 'فاطمة', 'علي', 'سارة', 'يوسف', 'مريم', 'خالد'];
+            
+            gameState.players = defaultNames.map(name => ({
+                name: name,
+                role: null,
+                alive: true,
+                votes: 0
+            }));
+            
+            assignRoles();
+            showHandoverPage();
+        }
+
+        // دالة إضافة لاعب
+        function addPlayer() {
+            const playerName = elements.playerNameInput.value.trim();
+            
+            if (playerName && playerName.length <= 12) {
+                if (gameState.players.length < 15) {
+                    gameState.players.push({
+                        name: playerName,
+                        role: null,
+                        alive: true,
+                        votes: 0
+                    });
+                    
+                    elements.playerNameInput.value = '';
+                    updatePlayerList();
+                    showMessage(`تم إضافة اللاعب ${playerName}`, 'success');
+                } else {
+                    showMessage('لا يمكن إضافة أكثر من 15 لاعب', 'error');
+                }
+            } else if (playerName.length > 12) {
+                showMessage('اسم اللاعب يجب أن يكون 12 حرفاً كحد أقصى', 'error');
+            } else {
+                showMessage('يرجى إدخال اسم اللاعب', 'error');
+            }
+        }
+
+        // دالة تحديث قائمة اللاعبين
+        function updatePlayerList() {
+            elements.playerList.innerHTML = '';
+            
+            gameState.players.forEach((player, index) => {
+                const playerTag = document.createElement('div');
+                playerTag.classList.add('player-tag');
+                playerTag.innerHTML = `
+                    <span>${player.name}</span>
+                    <button onclick="removePlayer(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                elements.playerList.appendChild(playerTag);
+            });
+            
+            // تحديث حالة زر بدء اللعبة
+            elements.startGameBtn.disabled = gameState.players.length < 6;
+        }
+
+        // دالة إزالة لاعب
+        function removePlayer(index) {
+            const playerName = gameState.players[index].name;
+            gameState.players.splice(index, 1);
+            updatePlayerList();
+            showMessage(`تم إزالة اللاعب ${playerName}`, 'success');
+        }
+
+        // دالة بدء اللعبة
+        function startGame() {
+            if (gameState.players.length >= 6) {
+                assignRoles();
+                showHandoverPage();
+            } else {
+                showMessage('يجب إضافة 6 لاعبين على الأقل', 'error');
+            }
+        }
+
+        // دالة توزيع الأدوار - تم التحديث حسب الشروط الجديدة
+        function assignRoles() {
+            // إنشاء قائمة بالأدوار بناءً على عدد اللاعبين
+            const roles = [];
+            const playerCount = gameState.players.length;
+            
+            // توزيع الأدوار حسب الشروط الجديدة:
+            // - الزعيم والقناص من 8 لاعبين فما فوق
+            // - عضو المافيا 1 لكل 3 لاعبين
+            // - الحد الأقصى 2 عضو مافيا، ومن 13 لاعب فما فوق 3 أعضاء مافيا
+            
+            let godfatherCount = playerCount >= 8 ? 1 : 0; // زعيم المافيا من 8 لاعبين فما فوق
+            let mafiaCount = Math.min(Math.floor(playerCount / 3), playerCount >= 13 ? 3 : 2); // 1 عضو مافيا لكل 3 لاعبين، بحد أقصى 2 (3 من 13 فما فوق)
+            let doctorCount = 1;
+            let detectiveCount = 1;
+            let sniperCount = playerCount >= 8 ? 1 : 0; // القناص من 8 لاعبين فما فوق
+            
+            // إضافة الأدوار إلى القائمة
+            if (godfatherCount > 0) roles.push('godfather');
+            for (let i = 0; i < mafiaCount; i++) roles.push('mafia');
+            if (doctorCount > 0) roles.push('doctor');
+            if (detectiveCount > 0) roles.push('detective');
+            if (sniperCount > 0) roles.push('sniper');
+            
+            // إكمال القائمة بأدوار المواطنين
+            while (roles.length < playerCount) {
+                roles.push('citizen');
+            }
+            
+            // خلط الأدوار عشوائياً
+            for (let i = roles.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [roles[i], roles[j]] = [roles[j], roles[i]];
+            }
+            
+            // توزيع الأدوار على اللاعبين
+            gameState.players.forEach((player, index) => {
+                player.role = roles[index];
+            });
+            
+            gameState.rolesAssigned = true;
+            gameState.currentPlayerIndex = 0;
+            
+            showMessage('تم توزيع الأدوار بنجاح', 'success');
+        }
+
+        // دالة عرض دور اللاعب
+        function showPlayerRole() {
+            if (gameState.currentPlayerIndex < gameState.players.length) {
+                const player = gameState.players[gameState.currentPlayerIndex];
+                const character = characters.find(c => c.id === player.role);
+                
+                elements.roleDisplayPlayer.textContent = player.name;
+                elements.roleDisplayTitle.textContent = character.name;
+                elements.roleDisplayIcon.className = `fas ${character.icon}`;
+                elements.roleDisplayDescription.textContent = character.description;
+                
+                showRolePage();
+            }
+        }
+
+        // دالة عرض دور اللاعب التالي
+        function showNextPlayerRole() {
+            gameState.currentPlayerIndex++;
+            
+            if (gameState.currentPlayerIndex < gameState.players.length) {
+                showHandoverPage();
+            } else {
+                showJudgeHandoverPage();
+            }
+        }
+
+        // دالة بدء مرحلة الليل
+        function startNightPhase() {
+            gameState.gamePhase = 'night';
+            gameState.currentRoleAction = 'mafia';
+            gameState.timer = 40;
+            
+            showNightPage();
+            startTimer();
+            updateNightPhase();
+        }
+
+        // دالة تحديث مرحلة الليل
+        function updateNightPhase() {
+            let description = '';
+            
+            switch (gameState.currentRoleAction) {
+                case 'mafia':
+                    description = 'دور المافيا: اختيار هدف للقتل';
+                    break;
+                case 'detective':
+                    description = 'دور المحقق: التحقق من هوية لاعب';
+                    break;
+                case 'doctor':
+                    description = 'دور الطبيب: اختيار لاعب لإنقاذه';
+                    break;
+                case 'sniper':
+                    description = 'دور القناص: اختيار هدف لإطلاق النار عليه';
+                    break;
+            }
+            
+            elements.phaseDescription.textContent = description;
+            
+            // تحديث اسم اللاعب حامل الدور الحالي
+            updateCurrentRolePlayer();
+            
+            // تحديث شبكة اللاعبين
+            updatePlayersGrid(elements.nightPlayersGrid, true);
+            
+            // تحديث تقدم المراحل
+            updatePhaseProgress();
+        }
+
+        // دالة تحديث اسم اللاعب حامل الدور الحالي
+        function updateCurrentRolePlayer() {
+            const currentRole = gameState.currentRoleAction;
+            
+            // دمج زعيم المافيا مع دور المافيا
+            if (currentRole === 'mafia') {
+                const mafiaPlayers = gameState.players.filter(p => 
+                    (p.role === 'mafia' || p.role === 'godfather') && p.alive
+                );
+                
+                if (mafiaPlayers.length > 0) {
+                    // عرض جميع أعضاء المافيا (بما في ذلك الزعيم)
+                    const mafiaNames = mafiaPlayers.map(p => p.name).join('، ');
+                    elements.currentRolePlayer.textContent = `${mafiaNames} - فريق المافيا`;
+                } else {
+                    // إذا لم يكن هناك مافيا أحياء، تخطي الدور بدون رسالة
+                    skipNightAction();
+                    return;
+                }
+            } else {
+                const rolePlayer = gameState.players.find(p => p.role === currentRole && p.alive);
+                
+                if (rolePlayer) {
+                    const character = characters.find(c => c.id === currentRole);
+                    elements.currentRolePlayer.textContent = `${rolePlayer.name} - ${character.name}`;
+                } else {
+                    // إذا لم يكن اللاعب حياً، تخطي الدور بدون رسالة
+                    skipNightAction();
+                    return;
+                }
+            }
+        }
+
+        // دالة تحديث تقدم المراحل
+        function updatePhaseProgress() {
+            const phases = ['mafia', 'detective', 'doctor', 'sniper'];
+            const currentPhaseIndex = phases.indexOf(gameState.currentRoleAction);
+            
+            document.querySelectorAll('.phase-step').forEach((step, index) => {
+                const circle = step.querySelector('.phase-circle');
+                if (index <= currentPhaseIndex) {
+                    circle.classList.add('active');
+                } else {
+                    circle.classList.remove('active');
+                }
+            });
+        }
+
+        // دالة تحديث شبكة اللاعبين
+        function updatePlayersGrid(gridElement, isNight) {
+            gridElement.innerHTML = '';
+            
+            gameState.players.forEach((player) => {
+                if (player.alive) {
+                    const playerCard = document.createElement('div');
+                    playerCard.classList.add('player-card');
+                    
+                    if (gameState.selectedPlayer === player) {
+                        playerCard.classList.add('selected');
+                    }
+                    
+                    if (!player.alive) {
+                        playerCard.classList.add('dead');
+                    }
+                    
+                    // منع الشخصيات المميزة من استخدام قدراتهم على أنفسهم
+                    // باستثناء الطبيب الذي يمكنه إنقاذ نفسه
+                    if (isNight) {
+                        const currentRole = gameState.currentRoleAction;
+                        const isCurrentPlayer = (currentRole === 'doctor' && player.role === 'doctor') ||
+                                               (currentRole === 'detective' && player.role === 'detective') ||
+                                               (currentRole === 'sniper' && player.role === 'sniper') ||
+                                               ((currentRole === 'mafia') && (player.role === 'mafia' || player.role === 'godfather'));
+                        
+                        // الطبيب فقط يمكنه استخدام قدرته على نفسه
+                        if (isCurrentPlayer && currentRole !== 'doctor') {
+                            playerCard.classList.add('disabled');
+                        }
+                    }
+                    
+                    playerCard.innerHTML = `
+                        <div>${player.name}</div>
+                    `;
+                    
+                    playerCard.addEventListener('click', () => {
+                        if (isNight) {
+                            selectPlayerForNightAction(player);
+                        } else {
+                            selectPlayerForVoting(player);
+                        }
+                    });
+                    
+                    gridElement.appendChild(playerCard);
+                }
+            });
+        }
+
+        // دالة اختيار لاعب لإجراء الليل
+        function selectPlayerForNightAction(player) {
+            // منع المافيا من قتل بعضهم البعض
+            if (gameState.currentRoleAction === 'mafia' && 
+                (player.role === 'mafia' || player.role === 'godfather')) {
+                showMessage('لا يمكن للمافيا قتل بعضهم البعض', 'error');
+                return;
+            }
+            
+            // منع الشخصيات المميزة من استخدام قدراتهم على أنفسهم (باستثناء الطبيب)
+            if ((gameState.currentRoleAction === 'detective' && player.role === 'detective') ||
+                (gameState.currentRoleAction === 'sniper' && player.role === 'sniper')) {
+                showMessage('لا يمكنك استخدام قدرتك على نفسك', 'error');
+                return;
+            }
+            
+            gameState.selectedPlayer = player;
+            updatePlayersGrid(elements.nightPlayersGrid, true);
+        }
+
+        // دالة تأكيد إجراء الليل
+        function submitNightAction() {
+            if (gameState.selectedPlayer) {
+                switch (gameState.currentRoleAction) {
+                    case 'mafia':
+                        gameState.killedTonight = gameState.selectedPlayer;
+                        break;
+                    case 'detective':
+                        gameState.investigatedTonight = gameState.selectedPlayer;
+                        break;
+                    case 'doctor':
+                        gameState.savedTonight = gameState.selectedPlayer;
+                        break;
+                    case 'sniper':
+                        // التحقق من أن القناص موجود (حي) قبل السماح له بالقتل
+                        const sniperPlayer = gameState.players.find(p => p.role === 'sniper' && p.alive);
+                        if (!sniperPlayer) {
+                            showMessage('القناص ميت ولا يمكنه استخدام قدرته', 'error');
+                            return;
+                        }
+                        gameState.sniperTarget = gameState.selectedPlayer;
+                        gameState.sniperUsedBullet = true;
+                        break;
+                }
+                
+                // تغيير رسالة التأكيد إلى "تم اختيار اللاعب"
+                showMessage(`تم اختيار اللاعب ${gameState.selectedPlayer.name}`, 'success');
+                
+                // إذا كان دور المحقق، عرض نتيجة التحقيق
+                if (gameState.currentRoleAction === 'detective' && gameState.investigatedTonight) {
+                    const isMafia = gameState.investigatedTonight.role === 'mafia' || 
+                                   gameState.investigatedTonight.role === 'godfather';
+                    
+                    // زعيم المافيا يظهر كمواطن عند التحقيق
+                    const result = gameState.investigatedTonight.role === 'godfather' ? 'مواطن' : 
+                                  (isMafia ? 'مافيا' : 'مواطن');
+                    
+                    showMessage(`اللاعب ${gameState.investigatedTonight.name} هو ${result}`, 'warning');
+                }
+                
+                // الانتقال إلى الدور التالي
+                const phases = ['mafia', 'detective', 'doctor', 'sniper'];
+                const currentIndex = phases.indexOf(gameState.currentRoleAction);
+                
+                if (currentIndex < phases.length - 1) {
+                    gameState.currentRoleAction = phases[currentIndex + 1];
+                    gameState.selectedPlayer = null;
+                    gameState.timer = 40; // إعادة تعيين المؤقت إلى 40 ثانية
+                    updateNightPhase();
+                } else {
+                    // انتهاء مرحلة الليل
+                    resolveNightActions();
+                }
+            } else {
+                showMessage('يرجى اختيار لاعب', 'error');
+            }
+        }
+
+        // دالة تخطي إجراء الليل
+        function skipNightAction() {
+            // الانتقال إلى الدور التالي
+            const phases = ['mafia', 'detective', 'doctor', 'sniper'];
+            const currentIndex = phases.indexOf(gameState.currentRoleAction);
+            
+            if (currentIndex < phases.length - 1) {
+                gameState.currentRoleAction = phases[currentIndex + 1];
+                gameState.selectedPlayer = null;
+                gameState.timer = 40; // إعادة تعيين المؤقت إلى 40 ثانية
+                updateNightPhase();
+            } else {
+                // انتهاء مرحلة الليل
+                resolveNightActions();
+            }
+            
+            // إخفاء رسالة تخطي الأدوار
+            // showMessage('تم تخطي الدور', 'warning');
+        }
+
+        // دالة معالجة إجراءات الليل
+        function resolveNightActions() {
+            // تطبيق إجراءات الليل
+            if (gameState.killedTonight && gameState.killedTonight !== gameState.savedTonight) {
+                gameState.killedTonight.alive = false;
+                gameState.dayResults.push({
+                    type: 'kill',
+                    player: gameState.killedTonight.name,
+                    saved: false
+                });
+            } else if (gameState.killedTonight) {
+                gameState.dayResults.push({
+                    type: 'kill',
+                    player: gameState.killedTonight.name,
+                    saved: true
+                });
+            }
+            
+            if (gameState.sniperUsedBullet && gameState.sniperTarget) {
+                const sniperPlayer = gameState.players.find(p => p.role === 'sniper' && p.alive);
+                if (sniperPlayer) {
+                    if (gameState.sniperTarget.role !== 'mafia' && gameState.sniperTarget.role !== 'godfather') {
+                        sniperPlayer.alive = false;
+                        gameState.dayResults.push({
+                            type: 'sniperDeath',
+                            player: sniperPlayer.name
+                        });
+                    } else {
+                        gameState.sniperTarget.alive = false;
+                        gameState.dayResults.push({
+                            type: 'sniperKill',
+                            player: gameState.sniperTarget.name
+                        });
+                    }
+                    gameState.sniperBullet = false;
+                }
+            }
+            
+            // التحقق من الفوز بعد تطبيق إجراءات الليل
+            if (checkGameWinner()) {
+                showVictoryScreen();
+                return;
+            }
+            
+            // إذا لم يفز أحد، استمر في اللعبة
+            showResultsPage();
+        }
+
+        // دالة تحديث صفحة النتائج
+        function updateResultsPage() {
+            elements.dayTitle.textContent = `نتائج اليوم ${gameState.dayNumber}`;
+            elements.resultsContainer.innerHTML = '';
+            
+            if (gameState.dayResults.length === 0) {
+                elements.resultsContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">لم تحدث أي أحداث في الليلة الماضية</p>';
+            } else {
+                gameState.dayResults.forEach(result => {
+                    const resultItem = document.createElement('div');
+                    resultItem.classList.add('result-item');
+                    
+                    let icon, text;
+                    
+                    switch (result.type) {
+                        case 'kill':
+                            if (result.saved) {
+                                icon = 'fa-heart';
+                                text = `تم إنقاذ ${result.player} من قبل الطبيب`;
+                            } else {
+                                icon = 'fa-skull';
+                                text = `تم قتل ${result.player} من قبل المافيا`;
+                            }
+                            break;
+                        case 'sniperKill':
+                            icon = 'fa-crosshairs';
+                            text = `تم قتل ${result.player} من قبل القناص`;
+                            break;
+                        case 'sniperDeath':
+                            icon = 'fa-user-slash';
+                            text = `مات القناص ${result.player} لأنه أخطأ في الهدف`;
+                            break;
+                        case 'execute':
+                            icon = 'fa-gavel';
+                            text = `تم إعدام ${result.player} بالتصويت`;
+                            break;
+                    }
+                    
+                    resultItem.innerHTML = `
+                        <i class="fas ${icon}" style="color: var(--accent); font-size: 1.5rem;"></i>
+                        <span>${text}</span>
+                    `;
+                    
+                    elements.resultsContainer.appendChild(resultItem);
+                });
+            }
+        }
+
+        // دالة الاستمرار إلى المناقشة
+        function continueToDiscussion() {
+            showDayPage();
+            startTimer();
+        }
+
+        // دالة تحديث مرحلة النهار
+        function updateDayPhase() {
+            elements.dayPhaseDescription.textContent = 'مرحلة النهار: مناقشة واختيار لاعب للإعدام';
+            updatePlayersGrid(elements.dayPlayersGrid, false);
+        }
+
+        // دالة اختيار لاعب للتصويت
+        function selectPlayerForVoting(player) {
+            gameState.selectedPlayer = player;
+            updatePlayersGrid(elements.dayPlayersGrid, false);
+        }
+
+        // دالة تأكيد التصويت
+        function submitDayAction() {
+            if (gameState.selectedPlayer) {
+                // تسجيل التصويت
+                if (!gameState.votes[gameState.selectedPlayer.name]) {
+                    gameState.votes[gameState.selectedPlayer.name] = 0;
+                }
+                gameState.votes[gameState.selectedPlayer.name]++;
+                gameState.totalVotes++;
+                
+                showMessage(`تم اختيار اللاعب ${gameState.selectedPlayer.name}`, 'success');
+                
+                // إذا تم التصويت من قبل الجميع، عرض النتائج
+                if (gameState.totalVotes >= gameState.players.filter(p => p.alive).length) {
+                    processVotingResults();
+                } else {
+                    // إعادة تعيين للتصويت التالي
+                    gameState.selectedPlayer = null;
+                    updatePlayersGrid(elements.dayPlayersGrid, false);
+                }
+            } else {
+                showMessage('يرجى اختيار لاعب للتصويت', 'error');
+            }
+        }
+
+        // دالة تخطي التصويت
+        function skipDayAction() {
+            // تسجيل تخطي اللاعب الحالي
+            gameState.skipVotes++;
+            gameState.totalVotes++;
+            
+            showMessage('تم تخطي التصويت', 'warning');
+            
+            // إذا تم التصويت من قبل الجميع، عرض النتائج
+            if (gameState.totalVotes >= gameState.players.filter(p => p.alive).length) {
+                processVotingResults();
+            } else {
+                // إعادة تعيين للتصويت التالي
+                gameState.selectedPlayer = null;
+                updatePlayersGrid(elements.dayPlayersGrid, false);
+            }
+        }
+
+        // دالة معالجة نتائج التصويت
+        function processVotingResults() {
+            // العثور على اللاعب الذي حصل على أعلى الأصوات
+            let maxVotes = 0;
+            let executedPlayer = null;
+            
+            for (const [playerName, votes] of Object.entries(gameState.votes)) {
+                if (votes > maxVotes) {
+                    maxVotes = votes;
+                    executedPlayer = gameState.players.find(p => p.name === playerName);
+                }
+            }
+            
+            // التحقق من التعادل - إذا كان عدد الأصوات للتخطي أكبر أو تساوى مع أعلى الأصوات
+            // أو إذا كان هناك تعادل بين لاعبين أو أكثر في أعلى الأصوات
+            if (gameState.skipVotes >= maxVotes) {
+                executedPlayer = null;
+            } else {
+                // التحقق من التعادل بين لاعبين أو أكثر
+                let tieCount = 0;
+                for (const [playerName, votes] of Object.entries(gameState.votes)) {
+                    if (votes === maxVotes) {
+                        tieCount++;
+                    }
+                }
+                
+                // إذا كان هناك تعادل بين لاعبين أو أكثر، لا يتم إعدام أحد
+                if (tieCount > 1) {
+                    executedPlayer = null;
+                }
+            }
+            
+            gameState.executedPlayer = executedPlayer;
+            showVotingResultsPage();
+        }
+
+        // دالة تحديث نتائج التصويت
+        function updateVotingResults() {
+            elements.votingResults.innerHTML = '';
+            
+            if (gameState.executedPlayer) {
+                const character = characters.find(c => c.id === gameState.executedPlayer.role);
+                
+                elements.votingResults.innerHTML = `
+                    <div class="vote-result-item">
+                        <div class="vote-result-icon">
+                            <i class="fas fa-skull"></i>
+                        </div>
+                        <div class="vote-result-details">
+                            <div class="vote-result-name">${gameState.executedPlayer.name}</div>
+                            <div class="vote-result-count">عدد الأصوات: ${gameState.votes[gameState.executedPlayer.name]}</div>
+                            <div class="vote-result-executed">تم إعدامه - ${character.name}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                elements.votingResults.innerHTML = `
+                    <div class="vote-result-item">
+                        <div class="vote-result-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div class="vote-result-details">
+                            <div class="vote-result-name">تعادل في الأصوات</div>
+                            <div class="vote-result-count">عدد أصوات التخطي: ${gameState.skipVotes}</div>
+                            <div class="vote-result-saved">لم يتم إعدام أي لاعب</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // دالة الاستمرار بعد التصويت
+        function continueAfterVoting() {
+            if (gameState.executedPlayer) {
+                gameState.executedPlayer.alive = false;
+                gameState.dayResults.push({
+                    type: 'execute',
+                    player: gameState.executedPlayer.name
+                });
+                
+                // التحقق من الفوز بعد الإعدام
+                if (checkGameWinner()) {
+                    showVictoryScreen();
+                    return;
+                }
+            }
+            
+            // الانتقال إلى اليوم التالي
+            gameState.dayNumber++;
+            gameState.gamePhase = 'night';
+            gameState.currentRoleAction = 'mafia';
+            gameState.killedTonight = null;
+            gameState.savedTonight = null;
+            gameState.investigatedTonight = null;
+            gameState.sniperTarget = null;
+            gameState.dayResults = [];
+            gameState.timer = 40;
+            gameState.sniperUsedBullet = false;
+            gameState.votes = {};
+            gameState.totalVotes = 0;
+            gameState.skipVotes = 0;
+            gameState.executedPlayer = null;
+            
+            showJudgeHandoverPage();
+        }
+
+        // دالة التحقق من الفوز
+        function checkGameWinner() {
+            const alivePlayers = gameState.players.filter(p => p.alive);
+            const mafiaPlayers = alivePlayers.filter(p => p.role === 'mafia' || p.role === 'godfather');
+            const citizenPlayers = alivePlayers.filter(p => p.role !== 'mafia' && p.role !== 'godfather');
+            
+            // إذا لم يتبقى مافيا - فوز المواطنين
+            if (mafiaPlayers.length === 0) {
+                gameState.gameWinner = 'citizen';
+                return true;
+            }
+            
+            // إذا كانت المافيا مساوية أو أكثر من المواطنين - فوز المافيا
+            if (mafiaPlayers.length >= citizenPlayers.length) {
+                gameState.gameWinner = 'mafia';
+                return true;
+            }
+            
+            return false;
+        }
+
+        // دالة عرض شاشة الفوز
+        function showVictoryScreen() {
+            createConfetti();
+            showVictoryPage();
+            
+            const winner = gameState.gameWinner;
+            const alivePlayers = gameState.players.filter(p => p.alive);
+            const mafiaPlayers = gameState.players.filter(p => (p.role === 'mafia' || p.role === 'godfather') && p.alive);
+            const citizenPlayers = gameState.players.filter(p => (p.role !== 'mafia' && p.role !== 'godfather') && p.alive);
+            const deadPlayers = gameState.players.filter(p => !p.alive);
+            
+            let victoryHTML = '';
+            
+            if (winner === 'citizen') {
+                victoryHTML = `
+                    <div class="victory-icon">
+                        <i class="fas fa-shield-alt" style="color: var(--citizen);"></i>
+                    </div>
+                    <h1 class="victory-title victory-citizen">فوز المواطنين! 🎉</h1>
+                    <p class="victory-subtitle">
+                        تمكن المواطنون من اكتشاف وإعدام جميع أعضاء المافيا!<br>
+                        تم استعادة السلام والأمان إلى البلدة.
+                    </p>
+                `;
+            } else {
+                victoryHTML = `
+                    <div class="victory-icon">
+                        <i class="fas fa-skull" style="color: var(--mafia);"></i>
+                    </div>
+                    <h1 class="victory-title victory-mafia">فوز المافيا! 💀</h1>
+                    <p class="victory-subtitle">
+                        سيطرت المافيا على البلدة وتخلصت من جميع المواطنين!<br>
+                        أصبحت البلدة تحت سيطرة الظلام.
+                    </p>
+                `;
+            }
+            
+            // إضافة الإحصائيات
+            victoryHTML += `
+                <div class="victory-stats">
+                    <div class="victory-stat">
+                        <div class="victory-stat-number victory-stat-citizen">${citizenPlayers.length}</div>
+                        <div class="victory-stat-label">مواطنون أحياء</div>
+                    </div>
+                    <div class="victory-stat">
+                        <div class="victory-stat-number victory-stat-mafia">${mafiaPlayers.length}</div>
+                        <div class="victory-stat-label">مافيا أحياء</div>
+                    </div>
+                    <div class="victory-stat">
+                        <div class="victory-stat-number">${deadPlayers.length}</div>
+                        <div class="victory-stat-label">لاعبون موتى</div>
+                    </div>
+                    <div class="victory-stat">
+                        <div class="victory-stat-number">${gameState.dayNumber}</div>
+                        <div class="victory-stat-label">أيام اللعب</div>
+                    </div>
+                </div>
+            `;
+            
+            // إضافة قائمة اللاعبين
+            victoryHTML += `
+                <div class="victory-players">
+                    <div class="victory-players-title">اللاعبون:</div>
+            `;
+            
+            gameState.players.forEach(player => {
+                const character = characters.find(c => c.id === player.role);
+                const statusClass = player.alive ? 'victory-player-alive' : 'victory-player-dead';
+                const statusIcon = player.alive ? '🟢' : '💀';
+                
+                victoryHTML += `
+                    <div class="victory-player">
+                        <div>
+                            <span class="victory-player-name ${statusClass}">${statusIcon} ${player.name}</span>
+                            <div class="victory-player-role">${character.name}</div>
+                        </div>
+                        <div class="${statusClass}">${player.alive ? 'حي' : 'ميت'}</div>
+                    </div>
+                `;
+            });
+            
+            victoryHTML += `</div>`;
+            
+            elements.victoryScreen.innerHTML = victoryHTML;
+        }
+
+        // دالة بدء لعبة جديدة بعد الفوز
+        function startNewGameAfterVictory() {
+            resetGame();
+            showSetupPage();
+            showMessage('تم بدء لعبة جديدة', 'success');
+        }
+
+        // دالة إنهاء اللعبة
+        function endGame() {
+            resetGame();
+            showStartPage();
+            showMessage('تم إنهاء اللعبة', 'warning');
+        }
+
+        // دالة إعادة تعيين اللعبة
+        function resetGame() {
+            gameState = {
+                players: [],
+                currentPage: 'start',
+                rolesAssigned: false,
+                currentPlayerIndex: 0,
+                gamePhase: 'night',
+                currentRoleAction: 'mafia',
+                timer: 40,
+                timerInterval: null,
+                selectedPlayer: null,
+                votes: {},
+                killedTonight: null,
+                savedTonight: null,
+                investigatedTonight: null,
+                sniperTarget: null,
+                sniperBullet: true,
+                dayResults: [],
+                votedPlayers: new Set(),
+                totalVotes: 0,
+                dayNumber: 1,
+                currentActionPlayer: null,
+                votingPhase: false,
+                playerVotes: {},
+                voteHistory: [],
+                currentPlayerRole: null,
+                votingResults: [],
+                executedPlayer: null,
+                sniperUsedBullet: false,
+                gameWinner: null,
+                skipVotes: 0
+            };
+            
+            clearInterval(gameState.timerInterval);
+        }
+
+        // دالة بدء المؤقت
+        function startTimer() {
+            clearInterval(gameState.timerInterval);
+            
+            gameState.timerInterval = setInterval(() => {
+                gameState.timer--;
+                
+                if (gameState.currentPage === 'night') {
+                    elements.gameTimer.textContent = gameState.timer;
+                } else if (gameState.currentPage === 'day') {
+                    elements.dayTimer.textContent = gameState.timer;
+                }
+                
+                if (gameState.timer <= 0) {
+                    clearInterval(gameState.timerInterval);
+                    
+                    if (gameState.currentPage === 'night') {
+                        skipNightAction();
+                    } else if (gameState.currentPage === 'day') {
+                        skipDayAction();
+                    }
+                }
+            }, 1000);
+        }
+
+        // دالة إنشاء النجوم
+        function createStars() {
+            const starsContainer = document.getElementById('starsContainer');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 3}px`;
+                star.style.height = star.style.width;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // دالة إنشاء تأثيرات الكونفيتي
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#54a0ff', '#ff9f43', '#a55eea'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animation = `confettiFall ${Math.random() * 3 + 2}s linear forwards`;
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                document.body.appendChild(confetti);
+                
+                // إزالة الكونفيتي بعد انتهاء الرسوم المتحركة
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        // دالة عرض الرسائل
+        function showMessage(message, type = 'success') {
+            const messageEl = document.createElement('div');
+            messageEl.classList.add('message', type);
+            messageEl.textContent = message;
+            document.body.appendChild(messageEl);
+            
+            // إزالة الرسالة بعد 5 ثوانٍ
+            setTimeout(() => {
+                messageEl.remove();
+            }, 5000);
+        }
+
+        // دالة عرض شخصيات التعليمات
+        function displayTutorialCharacters() {
+            elements.tutorialCharactersGrid.innerHTML = '';
+            
+            characters.forEach(character => {
+                const characterCard = document.createElement('div');
+                characterCard.classList.add('character-card', character.color);
+                characterCard.innerHTML = `
+                    <div class="character-header">
+                        <div class="character-icon">
+                            <i class="fas ${character.icon}"></i>
+                        </div>
+                        <div class="character-name">${character.name}</div>
+                    </div>
+                    <div class="character-description">${character.description}</div>
+                    <div class="character-details">
+                        ${character.details.map(detail => `
+                            <div class="detail-item">
+                                <i class="fas fa-circle detail-icon"></i>
+                                <span>${detail}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                characterCard.addEventListener('click', () => {
+                    const details = characterCard.querySelector('.character-details');
+                    details.classList.toggle('active');
+                });
+                
+                elements.tutorialCharactersGrid.appendChild(characterCard);
+            });
+        }
+
+        // دوال الحفظ والتحميل
+        function saveGame() {
+            try {
+                const gameData = {
+                    players: gameState.players,
+                    dayNumber: gameState.dayNumber,
+                    gamePhase: gameState.gamePhase,
+                    currentRoleAction: gameState.currentRoleAction,
+                    sniperBullet: gameState.sniperBullet
+                };
+                
+                localStorage.setItem('mafiaGameSave', JSON.stringify(gameData));
+                showMessage('تم حفظ اللعبة بنجاح', 'success');
+            } catch (error) {
+                showMessage('حدث خطأ أثناء حفظ اللعبة', 'error');
+                console.error('Error saving game:', error);
+            }
+        }
+
+        function loadGame() {
+            try {
+                const savedGame = localStorage.getItem('mafiaGameSave');
+                if (savedGame) {
+                    const gameData = JSON.parse(savedGame);
+                    
+                    // التحقق من صحة البيانات المحفوظة
+                    if (gameData.players && gameData.players.length >= 6) {
+                        gameState.players = gameData.players;
+                        gameState.dayNumber = gameData.dayNumber || 1;
+                        gameState.gamePhase = gameData.gamePhase || 'night';
+                        gameState.currentRoleAction = gameData.currentRoleAction || 'mafia';
+                        gameState.sniperBullet = gameData.sniperBullet !== undefined ? gameData.sniperBullet : true;
+                        gameState.rolesAssigned = true;
+                        
+                        showMessage('تم تحميل اللعبة بنجاح', 'success');
+                        // تحديث قائمة اللاعبين فقط دون بدء اللعبة
+                        updatePlayerList();
+                    } else {
+                        showMessage('بيانات اللعبة المحفوظة غير صالحة', 'error');
+                    }
+                } else {
+                    showMessage('لا توجد لعبة محفوظة', 'warning');
+                }
+            } catch (error) {
+                showMessage('حدث خطأ أثناء تحميل اللعبة', 'error');
+                console.error('Error loading game:', error);
+            }
+        }
+
+        // بدء التطبيق
+        window.onload = initGame;
+    </script>
+</body>
+</html>
